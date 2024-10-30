@@ -23,6 +23,9 @@ const ClasesSchema = new Schema({
     type: String,
     required: true,
   },
+  usuariosReservados: {
+    type: String,
+  },
   imagen: {
     type: String,
     default: "",
