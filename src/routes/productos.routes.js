@@ -8,9 +8,7 @@ const {
   agregarUnProductoAlCarrito,
   eliminarUnProductoDelCarrito,
   obtenerProductosCarrito,
-  agregarImagenProducto,
 } = require("../controllers/productos.controllers");
-const multer = require("../middlewares/multer");
 const auth = require("../middlewares/auth");
 const router = express.Router();
 
@@ -26,12 +24,6 @@ router.post(
   "/agregarProductoCarrito/:idProducto",
   auth("user"),
   agregarUnProductoAlCarrito
-);
-
-router.post(
-  "/agregarImagen/:idProducto",
-  multer.single("image"),
-  agregarImagenProducto
 );
 
 router.put("/:idProducto", auth("admin"), actualizarUnProducto);

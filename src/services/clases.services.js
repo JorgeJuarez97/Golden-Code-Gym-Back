@@ -95,12 +95,12 @@ const eliminarReservarClase = async (idClase, idUsuario) => {
   };
 };
 
-module.exports(
+module.exports = {
   obtenerClases,
   obtenerClase,
   actualizarClase,
   nuevaClase,
   eliminarClase,
   reservarClase,
-  eliminarReservarClase
-);
+  eliminarReservarClase,
+};
