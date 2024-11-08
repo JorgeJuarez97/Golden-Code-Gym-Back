@@ -20,14 +20,10 @@ const ClasesSchema = new Schema({
     required: true,
   },
   cuposPorDia: {
-    type: String,
+    type: Number,
     required: true,
   },
-  usuariosReservados: [
-    {
-      type: String,
-    },
-  ],
+  usuariosReservados: [],
   imagen: {
     type: String,
     default: "",

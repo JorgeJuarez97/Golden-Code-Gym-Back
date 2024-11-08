@@ -44,7 +44,7 @@ const actualizarUnaClase = async (req, res) => {
 };
 
 const eliminarUnaClase = async (req, res) => {
-  const result = await serviciosClases.eliminarClase(req.params.idProducto);
+  const result = await serviciosClases.eliminarClase(req.params.idClase);
 
   if (result.statusCode === 200) {
     res.status(200).json({ msg: result.msg });
@@ -55,14 +55,14 @@ const eliminarUnaClase = async (req, res) => {
 
 const reservarUnaClase = async (req, res) => {
   const result = await serviciosClases.reservarClase(
-    req.body,
+    req.idUsuario,
     req.params.idClase
   );
 
   if (result.statusCode === 200) {
     res.status(200).json({ msg: result.msg });
-  } else if (result.statusCode === 400) {
-    res.status(500).json({ msg: result.msg });
+  } else if (result.statusCode === 404) {
+    res.status(404).json({ msg: result.msg });
   } else {
     res.status(500).json({ msg: "Error al reservar clase" });
   }
@@ -70,14 +70,16 @@ const reservarUnaClase = async (req, res) => {
 
 const eliminarReservarUnaCLase = async (req, res) => {
   const result = await serviciosClases.eliminarReservarClase(
-    req.body,
+    req.idUsuario,
     req.params.idClase
   );
 
   if (result.statusCode === 200) {
     res.status(200).json({ msg: result.msg });
+  } else if (result.statusCode === 404) {
+    res.status(404).json({ msg: result.msg });
   } else {
-    res.status(500).json({ msg: "Error al reservar clase" });
+    res.status(500).json({ msg: "Error al eliminar reserva" });
   }
 };
 

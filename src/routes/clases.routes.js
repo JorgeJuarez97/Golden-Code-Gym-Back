@@ -1,6 +1,4 @@
 const express = require("express");
-const router = express.Router();
-const auth = require("../middlewares/auth");
 const {
   obtenerTodasLasClases,
   obtenerUnaClase,
@@ -10,17 +8,25 @@ const {
   eliminarUnaClase,
   eliminarReservarUnaCLase,
 } = require("../controllers/clases.controllers");
+const router = express.Router();
+const auth = require("../middlewares/auth");
 
-router.get("/", auth("user"), obtenerTodasLasClases);
+router.get("/", obtenerTodasLasClases);
 
 router.get("/:idClase", obtenerUnaClase);
 
-router.post("/", auth("admin"), crearUnaClase);
+router.post("/", crearUnaClase);
 
 router.post("/reservarCupo/:idClase", auth("user"), reservarUnaClase);
 
 router.put("/:idClase", actualizarUnaClase);
 
-router.delete("/idClase", auth("admin"), eliminarUnaClase);
+router.delete("/:idClase", eliminarUnaClase);
 
-router.delete("/reservarCupo/:idClase", auth("user"), eliminarReservarUnaCLase);
+router.delete(
+  "/eliminarReservarCupo/:idClase",
+  auth("user"),
+  eliminarReservarUnaCLase
+);
+
+module.exports = router;

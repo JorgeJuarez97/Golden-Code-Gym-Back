@@ -10,6 +10,14 @@ const obtenerProductos = async () => {
   };
 };
 
+const obtenerProductosPorTipo = async (tipoDeProducto) => {
+  const productos = await ProductModel.find({ tipoDeProducto });
+  return {
+    productos,
+    statusCode: 200,
+  };
+};
+
 const obtenerProducto = async (idProducto) => {
   const producto = await ProductModel.findOne({ _id: idProducto });
   return {
@@ -61,17 +69,20 @@ const cargarProductoCarrito = async (idUsuario, idProducto) => {
   );
 
   if (productoExiste) {
-    productoExiste.cantidad += cantidad;
-    await carrito.save();
     return {
-      msg: "Producto agregado con exito",
+      msg: "Producto ya existe en carrito",
       statusCode: 200,
     };
   }
 
   carrito.productos.push({
-    ...producto,
-    cantidad,
+    _id: producto._id,
+    tipoDeProducto: producto.tipoDeProducto,
+    nombreProducto: producto.nombreProducto,
+    precio: producto.precio * cantidad,
+    descripcion: producto.descripcion,
+    imagen: producto.imagen,
+    cantidad: cantidad,
   });
 
   await carrito.save();
@@ -82,13 +93,44 @@ const cargarProductoCarrito = async (idUsuario, idProducto) => {
   };
 };
 
+const actualizarProductoCarrito = async (idUsuario, idProducto) => {
+  const usuario = await UsersModel.findById(idUsuario);
+  const producto = await ProductModel.findById(idProducto);
+  const carrito = await CartModel.findOne({ _id: usuario.idCarrito });
+
+  const productoExiste = carrito.productos.find(
+    (prod) => prod?._id.toString() === idProducto.toString()
+  );
+
+  if (productoExiste) {
+    productoExiste.cantidad += 1;
+    productoExiste.precio = producto.precio * productoExiste.cantidad;
+  }
+
+  carrito.markModified("productos");
+
+  await carrito.save();
+  return {
+    msg: "Se actualizo la cantidad y el precio del producto",
+    statusCode: 200,
+  };
+};
+
 const eliminarProductoCarrito = async (idUsuario, idProducto) => {
   const usuario = await UsersModel.findById(idUsuario);
   const producto = await ProductModel.findById(idProducto);
   const carrito = await CartModel.findOne({ _id: usuario.idCarrito });
+
   const posicionCarrito = carrito.productos.findIndex(
     (prod) => prod?._id.toString() === idProducto.toString()
   );
+
+  if (posicionCarrito === -1) {
+    return {
+      msg: "Producto no encontrado en el carrito",
+      statusCode: 404,
+    };
+  }
 
   carrito.productos.splice(posicionCarrito, 1);
   await carrito.save();
@@ -101,7 +143,7 @@ const eliminarProductoCarrito = async (idUsuario, idProducto) => {
 
 const obtenerTodosLosProductosCarritoUsuario = async (idUsuario) => {
   const usuario = await UsersModel.findById(idUsuario);
-  const carrito = await CartModel.findOne({ _id: usuario.idCarrito });
+  const carrito = await CartModel.findById({ _id: usuario.idCarrito });
 
   return {
     productos: carrito.productos,
@@ -111,6 +153,7 @@ const obtenerTodosLosProductosCarritoUsuario = async (idUsuario) => {
 
 module.exports = {
   obtenerProductos,
+  obtenerProductosPorTipo,
   obtenerProducto,
   nuevoProducto,
   actualizarProducto,
@@ -118,4 +161,5 @@ module.exports = {
   cargarProductoCarrito,
   eliminarProductoCarrito,
   obtenerTodosLosProductosCarritoUsuario,
+  actualizarProductoCarrito,
 };

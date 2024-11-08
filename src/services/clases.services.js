@@ -2,7 +2,7 @@ const UsersModel = require("../models/usuarios.schema");
 const ClasesModel = require("../models/clases.schema");
 
 const obtenerClases = async () => {
-  const productos = await ClasesModel.find();
+  const clases = await ClasesModel.find();
   return {
     clases,
     statusCode: 200,
@@ -10,9 +10,9 @@ const obtenerClases = async () => {
 };
 
 const obtenerClase = async (idClase) => {
-  const producto = await ClasesModel.findOne({ _id: idClase });
+  const clase = await ClasesModel.findOne({ _id: idClase });
   return {
-    clases,
+    clase,
     statusCode: 200,
   };
 };
@@ -49,18 +49,41 @@ const eliminarClase = async (idClase) => {
   };
 };
 
-const reservarClase = async (idClase, idUsuario) => {
+const reservarClase = async (idUsuario, idClase) => {
   const usuario = await UsersModel.findById(idUsuario);
   const clase = await ClasesModel.findById(idClase);
 
-  const claseExiste = clase.find(
-    (clas) => clas?._id.toString() === idClase.toString()
+  if (!usuario) {
+    return {
+      msg: "Usuario no encontrado",
+      statusCode: 404,
+    };
+  }
+
+  if (!clase) {
+    console.log("Clase no encontrada");
+    return {
+      msg: "Clase no encontrada",
+      statusCode: 404,
+    };
+  }
+
+  const usuarioReservado = clase.usuariosReservados.find(
+    (reservado) => reservado?._id.toString() === idUsuario.toString()
   );
 
-  if (claseExiste && clase.cuposPorDia != 0) {
-    clase.usuariosReservados.push({ usuario, dia });
+  if (usuarioReservado) {
+    return {
+      msg: "Ya reservaste un cupo para esta clase",
+      statusCode: 404,
+    };
+  }
+
+  if (clase.cuposPorDia > 0) {
+    clase.usuariosReservados.push(usuario);
     clase.cuposPorDia -= 1;
     await clase.save();
+
     return {
       msg: "Cupo reservado",
       statusCode: 200,
@@ -69,24 +92,42 @@ const reservarClase = async (idClase, idUsuario) => {
 
   return {
     msg: "No hay cupos disponibles",
-    statusCode: 400,
+    statusCode: 404,
   };
 };
 
-const eliminarReservarClase = async (idClase, idUsuario) => {
+const eliminarReservarClase = async (idUsuario, idClase) => {
   const usuario = await UsersModel.findById(idUsuario);
   const clase = await ClasesModel.findById(idClase);
 
-  const claseExiste = clase.find(
-    (clas) => clas?._id.toString() === idClase.toString()
+  if (!usuario) {
+    return {
+      msg: "Usuario no encontrado",
+      statusCode: 404,
+    };
+  }
+
+  if (!clase) {
+    console.log("Clase no encontrada");
+    return {
+      msg: "Clase no encontrada",
+      statusCode: 404,
+    };
+  }
+
+  const posicionUsuario = clase.usuariosReservados.findIndex(
+    (userId) => userId?._id.toString() === idUsuario.toString()
   );
 
-  const posicionUsuario = usuario.findIndex(
-    (user) => user?._id.toString() === idUsuario.toString()
-  );
+  if (posicionUsuario === -1) {
+    return {
+      msg: "Usuario no tiene reserva para esta clase",
+      statusCode: 404,
+    };
+  }
 
-  claseExiste.usuariosReservados.splice(posicionUsuario, 1);
-  claseExiste.cuposPorDia += 1;
+  clase.usuariosReservados.splice(posicionUsuario, 1);
+  clase.cuposPorDia += 1;
   await clase.save();
 
   return {

@@ -19,7 +19,6 @@ const UserSchema = new Schema({
   },
   nombreUsuario: {
     type: String,
-    required: true,
     trim: true,
     unique: true,
   },
@@ -48,10 +47,22 @@ const UserSchema = new Schema({
   },
 });
 
-UsersSchema.methods.toJSON = function () {
+UserSchema.pre("save", function (next) {
+  this.nombreUsuario = `${this.nombre} ${this.apellido}`;
+  next();
+});
+
+UserSchema.pre("save", function (next) {
+  if (this.rol !== "user") {
+    this.idCarrito = undefined;
+  }
+  next();
+});
+
+UserSchema.methods.toJSON = function () {
   const { contrasenia, ...usuario } = this.toObject();
   return usuario;
 };
 
-const UsersModel = model("user", UsersSchema);
+const UsersModel = model("user", UserSchema);
 module.exports = UsersModel;
