@@ -10,6 +10,18 @@ const obtenerTodosLosProductos = async (req, res) => {
   }
 };
 
+const obtenerTodosLosProductosPorTipo = async (req, res) => {
+  const result = await serviciosProductos.obtenerProductosPorTipo(
+    req.params.tipoDeProducto
+  );
+
+  if (result.statusCode === 200) {
+    res.status(200).json(result.productos);
+  } else {
+    res.status(500).json({ msg: "Error al traer los productos" });
+  }
+};
+
 const obtenerUnProducto = async (req, res) => {
   const result = await serviciosProductos.obtenerProducto(
     req.params.idProducto
@@ -78,8 +90,23 @@ const eliminarUnProductoDelCarrito = async (req, res) => {
 
   if (result.statusCode === 200) {
     res.status(200).json({ msg: result.msg });
+  } else if (result.statusCode === 404) {
+    res.status(404).json({ msg: result.msg });
   } else {
     res.status(500).json({ msg: "Error al eliminar el producto del carrito" });
+  }
+};
+
+const actualizarUnProductoDelCarrito = async (req, res) => {
+  const result = await serviciosProductos.actualizarProductoCarrito(
+    req.idUsuario,
+    req.params.idProducto
+  );
+
+  if (result.statusCode === 200) {
+    res.status(200).json({ msg: result.msg });
+  } else {
+    res.status(500).json({ msg: "Error al actualizar el producto" });
   }
 };
 
@@ -100,6 +127,7 @@ const obtenerProductosCarrito = async (req, res) => {
 
 module.exports = {
   obtenerTodosLosProductos,
+  obtenerTodosLosProductosPorTipo,
   obtenerUnProducto,
   crearUnProducto,
   actualizarUnProducto,
@@ -107,4 +135,5 @@ module.exports = {
   agregarUnProductoAlCarrito,
   eliminarUnProductoDelCarrito,
   obtenerProductosCarrito,
+  actualizarUnProductoDelCarrito,
 };

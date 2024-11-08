@@ -8,11 +8,11 @@ const {
   habilitarUsuario,
   actualizarUnUsuario,
   eliminarUnUsuario,
+  cierreDeSesionUsuario,
 } = require("../controllers/usuarios.controllers");
 const { check } = require("express-validator");
-const auth = require("../middlewares/auth");
-
 const router = express.Router();
+const auth = require("../middlewares/auth");
 
 router.get("/", auth("admin"), obtenerTodosLosUsuarios);
 router.get("/:idUsuario", auth("admin"), obtenerUnUsuario);
@@ -33,11 +33,12 @@ router.post(
   crearUnUsuario
 );
 router.post("/iniciarSesion", inicioDeSesionUsuario);
+router.post("/cerrarSesion", cierreDeSesionUsuario);
 
 router.put("/deshabilitar/:idUsuario", auth("admin"), deshabilitarUsuario);
 router.put("/habilitar/:idUsuario", auth("admin"), habilitarUsuario);
 router.put("/:idUsuario", auth("admin"), actualizarUnUsuario);
 
-router.delete("/:idUsuario", auth("admin"), eliminarUnUsuario);
+router.delete("/:idUsuario", eliminarUnUsuario);
 
 module.exports = router;

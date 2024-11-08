@@ -44,7 +44,6 @@ const crearUsuario = async (body) => {
   const carrito = new CartModel({ idUsuario: usuario._id });
 
   usuario.idCarrito = carrito._id;
-  usuario.idFavorito = favorito._id;
 
   const salt = await bcrypt.genSalt(10);
   usuario.contrasenia = await bcrypt.hash(usuario.contrasenia, salt);
@@ -114,6 +113,13 @@ const iniciarSesion = async (body) => {
   };
 };
 
+const cerrarSesion = async () => {
+  return {
+    msg: "Sesión cerrada exitosamente",
+    statusCode: 200,
+  };
+};
+
 const bloquearUsuarioPorId = async (idUsuario) => {
   const usuario = await UsersModel.findById(idUsuario);
   usuario.bloqueado = true;
@@ -143,4 +149,5 @@ module.exports = {
   iniciarSesion,
   bloquearUsuarioPorId,
   desbloquearUsuarioPorId,
+  cerrarSesion,
 };

@@ -8,13 +8,21 @@ const {
   agregarUnProductoAlCarrito,
   eliminarUnProductoDelCarrito,
   obtenerProductosCarrito,
+  obtenerTodosLosProductosPorTipo,
+  actualizarUnProductoDelCarrito,
 } = require("../controllers/productos.controllers");
-const auth = require("../middlewares/auth");
 const router = express.Router();
+const auth = require("../middlewares/auth");
 
-router.get("/", auth("user"), obtenerTodosLosProductos);
+router.get("/", obtenerTodosLosProductos);
 
-router.get("/obtenerProductosCarrito", auth("user"), obtenerProductosCarrito);
+router.get("/:tipoDeProducto", obtenerTodosLosProductosPorTipo);
+
+router.get(
+  "/obtenerProductosCarrito/:idUsuario",
+  auth("user"),
+  obtenerProductosCarrito
+);
 
 router.get("/:idProducto", obtenerUnProducto);
 
@@ -27,6 +35,11 @@ router.post(
 );
 
 router.put("/:idProducto", auth("admin"), actualizarUnProducto);
+router.put(
+  "/actualizarProductoCarrito/:idProducto",
+  auth("user"),
+  actualizarUnProductoDelCarrito
+);
 
 router.delete("/:idProducto", auth("admin"), eliminarUnProducto);
 

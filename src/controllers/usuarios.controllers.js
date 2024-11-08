@@ -72,6 +72,16 @@ const inicioDeSesionUsuario = async (req, res) => {
   }
 };
 
+const cierreDeSesionUsuario = async (req, res) => {
+  const result = await serviciosUsuarios.cerrarSesion(req.body);
+
+  if (result.statusCode === 200) {
+    res.status(200).json({ msg: result.msg });
+  } else {
+    res.status(500).json({ msg: "Error al cerrar sesion" });
+  }
+};
+
 const habilitarUsuario = async (req, res) => {
   const result = await serviciosUsuarios.desbloquearUsuarioPorId(
     req.params.idUsuario
@@ -103,4 +113,5 @@ module.exports = {
   inicioDeSesionUsuario,
   habilitarUsuario,
   deshabilitarUsuario,
+  cierreDeSesionUsuario,
 };
