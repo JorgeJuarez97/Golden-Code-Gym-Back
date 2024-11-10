@@ -125,6 +125,19 @@ const obtenerProductosCarrito = async (req, res) => {
   }
 };
 
+const agregarImagenProducto = async (req, res) => {
+  const result = await serviciosProductos.agregarImagen(
+    req.params.idProducto,
+    req.file
+  );
+
+  if (result.statusCode === 200) {
+    res.status(200).json({ msg: result.msg });
+  } else {
+    res.status(500).json({ msg: "Error al agregar la imagen al producto" });
+  }
+};
+
 module.exports = {
   obtenerTodosLosProductos,
   obtenerTodosLosProductosPorTipo,
@@ -136,4 +149,5 @@ module.exports = {
   eliminarUnProductoDelCarrito,
   obtenerProductosCarrito,
   actualizarUnProductoDelCarrito,
+  agregarImagenProducto,
 };

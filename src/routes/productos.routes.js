@@ -10,28 +10,31 @@ const {
   obtenerProductosCarrito,
   obtenerTodosLosProductosPorTipo,
   actualizarUnProductoDelCarrito,
+  agregarImagenProducto,
 } = require("../controllers/productos.controllers");
 const router = express.Router();
 const auth = require("../middlewares/auth");
+const multer = require("../middlewares/multer");
 
 router.get("/", obtenerTodosLosProductos);
-
 router.get("/:tipoDeProducto", obtenerTodosLosProductosPorTipo);
-
 router.get(
   "/obtenerProductosCarrito/:idUsuario",
   auth("user"),
   obtenerProductosCarrito
 );
-
 router.get("/:idProducto", obtenerUnProducto);
 
 router.post("/", auth("admin"), crearUnProducto);
-
 router.post(
   "/agregarProductoCarrito/:idProducto",
   auth("user"),
   agregarUnProductoAlCarrito
+);
+router.post(
+  "/agregarImagen/:idProducto",
+  multer.single("image"),
+  agregarImagenProducto
 );
 
 router.put("/:idProducto", auth("admin"), actualizarUnProducto);
@@ -42,7 +45,6 @@ router.put(
 );
 
 router.delete("/:idProducto", auth("admin"), eliminarUnProducto);
-
 router.delete(
   "/eliminarProductoCarrito/:idProducto",
   auth("user"),
