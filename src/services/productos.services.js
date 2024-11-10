@@ -2,6 +2,7 @@ const CartModel = require("../models/carrito.schema");
 const ProductModel = require("../models/productos.schema");
 const UsersModel = require("../models/usuarios.schema");
 const cloudinary = require("../helpers/cloudinary.config");
+const { MercadoPagoConfig, Preference } = require("mercadopago");
 
 const obtenerProductos = async () => {
   const productos = await ProductModel.find();
@@ -105,14 +106,13 @@ const actualizarProductoCarrito = async (idUsuario, idProducto) => {
 
   if (productoExiste) {
     productoExiste.cantidad += 1;
-    productoExiste.precio = producto.precio * productoExiste.cantidad;
   }
 
   carrito.markModified("productos");
 
   await carrito.save();
   return {
-    msg: "Se actualizo la cantidad y el precio del producto",
+    msg: "Se actualizo la cantidad del producto",
     statusCode: 200,
   };
 };
@@ -165,6 +165,49 @@ const agregarImagen = async (idProducto, file) => {
   };
 };
 
+const pagarMercadoPago = async (idUsuario) => {
+  const cliente = new MercadoPagoConfig({
+    accessToken: process.env.MP_ACCESS_TOKEN,
+  });
+  const usuario = await UsersModel.findById(idUsuario);
+  const carrito = await CartModel.findById({ _id: usuario.idCarrito });
+
+  const items = [
+    {
+      title: carrito.productos
+        .map((producto) => `${producto.nombreProducto} x${producto.cantidad}`)
+        .join(", "),
+      quantity: 1,
+      unit_price: carrito.productos.reduce(
+        (acc, prod) => acc + prod.precio * prod.cantidad,
+        0
+      ),
+      currency_id: "ARS",
+    },
+  ];
+
+  const preference = new Preference(cliente);
+
+  const result = await preference.create({
+    body: {
+      items: items,
+      back_urls: {
+        success: "frontend/carrito/secces",
+        failure: "frontend/carrito/failure",
+        pending: "frontend/carrito/pending",
+      },
+      auto_return: "approved",
+    },
+  });
+
+  console.log(result);
+
+  return {
+    url: result.init_point,
+    statusCode: 200,
+  };
+};
+
 module.exports = {
   obtenerProductos,
   obtenerProductosPorTipo,
@@ -177,4 +220,5 @@ module.exports = {
   obtenerTodosLosProductosCarritoUsuario,
   actualizarProductoCarrito,
   agregarImagen,
+  pagarMercadoPago,
 };
