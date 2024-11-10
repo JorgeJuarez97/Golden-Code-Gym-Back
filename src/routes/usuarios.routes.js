@@ -39,6 +39,6 @@ router.put("/deshabilitar/:idUsuario", auth("admin"), deshabilitarUsuario);
 router.put("/habilitar/:idUsuario", auth("admin"), habilitarUsuario);
 router.put("/:idUsuario", auth("admin"), actualizarUnUsuario);
 
-router.delete("/:idUsuario", eliminarUnUsuario);
+router.delete("/:idUsuario", auth("admin"), eliminarUnUsuario);
 
 module.exports = router;
