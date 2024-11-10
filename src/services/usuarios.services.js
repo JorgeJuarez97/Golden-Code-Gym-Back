@@ -70,6 +70,16 @@ const actualizarUsuario = async (body, idUsuario) => {
 };
 
 const eliminarUsuario = async (idUsuario) => {
+  const usuario = await UsersModel.findById(idUsuario);
+
+  if (!usuario) {
+    return {
+      msg: "Usuario no encontrado",
+      statusCode: 404,
+    };
+  }
+
+  await CartModel.findByIdAndDelete({ _id: usuario.idCarrito });
   await UsersModel.findByIdAndDelete({ _id: idUsuario });
 
   return {
