@@ -2,6 +2,7 @@ const UsersModel = require("../models/usuarios.schema");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const CartModel = require("../models/carrito.schema");
+const { darBienvenidaUsuario } = require("../helpers/mensajes.mails");
 
 const obtenerUsuarios = async () => {
   const usuarios = await UsersModel.find();
@@ -50,6 +51,8 @@ const crearUsuario = async (body) => {
 
   await carrito.save();
   await usuario.save();
+
+  await darBienvenidaUsuario(usuario.emailUsuario, usuario.nombreUsuario);
 
   return {
     msg: "Usuario creado con exito",
