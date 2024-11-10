@@ -11,6 +11,7 @@ const {
   obtenerTodosLosProductosPorTipo,
   actualizarUnProductoDelCarrito,
   agregarImagenProducto,
+  pagarProductos,
 } = require("../controllers/productos.controllers");
 const router = express.Router();
 const auth = require("../middlewares/auth");
@@ -36,6 +37,7 @@ router.post(
   multer.single("image"),
   agregarImagenProducto
 );
+router.post("/pagarCarritoProductos", auth("user"), pagarProductos);
 
 router.put("/:idProducto", auth("admin"), actualizarUnProducto);
 router.put(
