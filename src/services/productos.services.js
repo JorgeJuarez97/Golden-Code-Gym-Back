@@ -1,6 +1,7 @@
 const CartModel = require("../models/carrito.schema");
 const ProductModel = require("../models/productos.schema");
 const UsersModel = require("../models/usuarios.schema");
+const cloudinary = require("../helpers/cloudinary.config");
 
 const obtenerProductos = async () => {
   const productos = await ProductModel.find();
@@ -151,6 +152,19 @@ const obtenerTodosLosProductosCarritoUsuario = async (idUsuario) => {
   };
 };
 
+const agregarImagen = async (idProducto, file) => {
+  const producto = await ProductModel.findById(idProducto);
+  const imagen = await cloudinary.uploader.upload(file.path);
+  producto.imagen = imagen.url;
+
+  await producto.save();
+
+  return {
+    msg: "Imagen cargada",
+    statusCode: 200,
+  };
+};
+
 module.exports = {
   obtenerProductos,
   obtenerProductosPorTipo,
@@ -162,4 +176,5 @@ module.exports = {
   eliminarProductoCarrito,
   obtenerTodosLosProductosCarritoUsuario,
   actualizarProductoCarrito,
+  agregarImagen,
 };
