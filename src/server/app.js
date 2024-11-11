@@ -23,6 +23,7 @@ class Server {
     this.app.use("/usuariosgym", require("../routes/usuarios.routes"));
     this.app.use("/clasesgym", require("../routes/clases.routes"));
     this.app.use("/profesgym", require("../routes/profes.routes"));
+    this.app.use("/planesgym", require("../routes/planes.routes"));
   }
 
   listen() {
