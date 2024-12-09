@@ -83,6 +83,39 @@ const eliminarReservarUnaCLase = async (req, res) => {
   }
 };
 
+const habilitarClase = async (req, res) => {
+  const result = await serviciosClases.desbloquearClasePorId(
+    req.params.idClase
+  );
+  if (result.statusCode === 200) {
+    res.status(200).json({ msg: result.msg });
+  } else {
+    res.status(500).json({ msg: "Error al habilitar la clase" });
+  }
+};
+
+const deshabilitarClase = async (req, res) => {
+  const result = await serviciosClases.bloquearClasePorId(req.params.idClase);
+  if (result.statusCode === 200) {
+    res.status(200).json({ msg: result.msg });
+  } else {
+    res.status(500).json({ msg: "Error al deshabilitar la clase" });
+  }
+};
+
+const agregarImagenClase = async (req, res) => {
+  const result = await serviciosClases.agregarImagen(
+    req.params.idClase,
+    req.file
+  );
+
+  if (result.statusCode === 200) {
+    res.status(200).json({ msg: result.msg });
+  } else {
+    res.status(500).json({ msg: "Error al agregar la imagen a la clase" });
+  }
+};
+
 module.exports = {
   obtenerTodasLasClases,
   obtenerUnaClase,
@@ -91,4 +124,7 @@ module.exports = {
   eliminarUnaClase,
   reservarUnaClase,
   eliminarReservarUnaCLase,
+  habilitarClase,
+  deshabilitarClase,
+  agregarImagenClase,
 };

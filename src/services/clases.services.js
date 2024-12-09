@@ -136,6 +136,39 @@ const eliminarReservarClase = async (idUsuario, idClase) => {
   };
 };
 
+const bloquearClasePorId = async (idClase) => {
+  const clase = await ClasesModel.findById(idClase);
+  clase.bloqueado = true;
+  await clase.save();
+  return {
+    msg: "Clase bloqueada",
+    statusCode: 200,
+  };
+};
+
+const desbloquearClasePorId = async (idClase) => {
+  const clase = await ClasesModel.findById(idClase);
+  clase.bloqueado = false;
+  await clase.save();
+  return {
+    msg: "Clase habilitada",
+    statusCode: 200,
+  };
+};
+
+const agregarImagen = async (idClase, file) => {
+  const clase = await ClasesModel.findById(idClase);
+  const imagen = await cloudinary.uploader.upload(file.path);
+  clase.imagen = imagen.url;
+
+  await clase.save();
+
+  return {
+    msg: "Imagen cargada",
+    statusCode: 200,
+  };
+};
+
 module.exports = {
   obtenerClases,
   obtenerClase,
@@ -144,4 +177,7 @@ module.exports = {
   eliminarClase,
   reservarClase,
   eliminarReservarClase,
+  bloquearClasePorId,
+  desbloquearClasePorId,
+  agregarImagen,
 };

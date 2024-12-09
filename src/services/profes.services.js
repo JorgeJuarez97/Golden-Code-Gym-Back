@@ -47,10 +47,46 @@ const eliminarProfe = async (idProfe) => {
   };
 };
 
+const agregarImagen = async (idProfe, file) => {
+  const profe = await ProfesModel.findById(idProfe);
+  const imagen = await cloudinary.uploader.upload(file.path);
+  profe.imagen = imagen.url;
+
+  await profe.save();
+
+  return {
+    msg: "Imagen cargada",
+    statusCode: 200,
+  };
+};
+
+const bloquearProfePorId = async (idProfe) => {
+  const profe = await ProfesModel.findById(idProfe);
+  profe.bloqueado = true;
+  await profe.save();
+  return {
+    msg: "Profe bloqueado",
+    statusCode: 200,
+  };
+};
+
+const desbloquearProfePorId = async (idProfe) => {
+  const profe = await ProfesModel.findById(idProfe);
+  profe.bloqueado = false;
+  await profe.save();
+  return {
+    msg: "Profe habilitado",
+    statusCode: 200,
+  };
+};
+
 module.exports = {
   obtenerProfes,
   obtenerProfe,
   crearProfe,
   actualizarProfe,
   eliminarProfe,
+  agregarImagen,
+  bloquearProfePorId,
+  desbloquearProfePorId,
 };

@@ -53,10 +53,46 @@ const eliminarUnProfe = async (req, res) => {
   }
 };
 
+const agregarImagenProfe = async (req, res) => {
+  const result = await serviciosProfes.agregarImagen(
+    req.params.idProfe,
+    req.file
+  );
+
+  if (result.statusCode === 200) {
+    res.status(200).json({ msg: result.msg });
+  } else {
+    res.status(500).json({ msg: "Error al agregar la imagen al profesor" });
+  }
+};
+
+const habilitarProfe = async (req, res) => {
+  const result = await serviciosProfes.desbloquearProfePorId(
+    req.params.idProfe
+  );
+  if (result.statusCode === 200) {
+    res.status(200).json({ msg: result.msg });
+  } else {
+    res.status(500).json({ msg: "Error al habilitar al profesor" });
+  }
+};
+
+const deshabilitarProfe = async (req, res) => {
+  const result = await serviciosProfes.bloquearProfePorId(req.params.idProfe);
+  if (result.statusCode === 200) {
+    res.status(200).json({ msg: result.msg });
+  } else {
+    res.status(500).json({ msg: "Error al deshabilitar al profesor" });
+  }
+};
+
 module.exports = {
   obtenerTodosLosProfes,
   obtenerUnProfe,
   crearUnProfe,
   actualizarUnProfe,
   eliminarUnProfe,
+  agregarImagenProfe,
+  habilitarProfe,
+  deshabilitarProfe,
 };

@@ -13,7 +13,7 @@ const obtenerProductos = async () => {
 };
 
 const obtenerProductosPorTipo = async (tipoDeProducto) => {
-  const productos = await ProductModel.find({ tipoDeProducto });
+  const productos = await ProductModel.find({ tipoDeProducto: tipoDeProducto });
   return {
     productos,
     statusCode: 200,
@@ -208,6 +208,26 @@ const pagarMercadoPago = async (idUsuario) => {
   };
 };
 
+const bloquearProductoPorId = async (idProducto) => {
+  const producto = await ProductModel.findById(idProducto);
+  producto.bloqueado = true;
+  await producto.save();
+  return {
+    msg: "Producto bloqueado",
+    statusCode: 200,
+  };
+};
+
+const desbloquearProductoPorId = async (idProducto) => {
+  const producto = await ProductModel.findById(idProducto);
+  producto.bloqueado = false;
+  await producto.save();
+  return {
+    msg: "Producto habilitado",
+    statusCode: 200,
+  };
+};
+
 module.exports = {
   obtenerProductos,
   obtenerProductosPorTipo,
@@ -221,4 +241,6 @@ module.exports = {
   actualizarProductoCarrito,
   agregarImagen,
   pagarMercadoPago,
+  bloquearProductoPorId,
+  desbloquearProductoPorId,
 };
