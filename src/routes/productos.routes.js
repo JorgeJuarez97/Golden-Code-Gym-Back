@@ -12,13 +12,15 @@ const {
   actualizarUnProductoDelCarrito,
   agregarImagenProducto,
   pagarProductos,
+  deshabilitarProducto,
+  habilitarProducto,
 } = require("../controllers/productos.controllers");
 const router = express.Router();
 const auth = require("../middlewares/auth");
 const multer = require("../middlewares/multer");
 
 router.get("/", obtenerTodosLosProductos);
-router.get("/:tipoDeProducto", obtenerTodosLosProductosPorTipo);
+router.get("/tipo/:tipoDeProducto", obtenerTodosLosProductosPorTipo);
 router.get(
   "/obtenerProductosCarrito/:idUsuario",
   auth("user"),
@@ -45,6 +47,8 @@ router.put(
   auth("user"),
   actualizarUnProductoDelCarrito
 );
+router.put("/deshabilitar/:idProducto", auth("admin"), deshabilitarProducto);
+router.put("/habilitar/:idProducto", auth("admin"), habilitarProducto);
 
 router.delete("/:idProducto", auth("admin"), eliminarUnProducto);
 router.delete(

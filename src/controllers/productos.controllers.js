@@ -148,6 +148,28 @@ const pagarProductos = async (req, res) => {
   }
 };
 
+const habilitarProducto = async (req, res) => {
+  const result = await serviciosProductos.desbloquearProductoPorId(
+    req.params.idProducto
+  );
+  if (result.statusCode === 200) {
+    res.status(200).json({ msg: result.msg });
+  } else {
+    res.status(500).json({ msg: "Error al habilitar el producto" });
+  }
+};
+
+const deshabilitarProducto = async (req, res) => {
+  const result = await serviciosProductos.bloquearProductoPorId(
+    req.params.idProducto
+  );
+  if (result.statusCode === 200) {
+    res.status(200).json({ msg: result.msg });
+  } else {
+    res.status(500).json({ msg: "Error al deshabilitar el producto" });
+  }
+};
+
 module.exports = {
   obtenerTodosLosProductos,
   obtenerTodosLosProductosPorTipo,
@@ -161,4 +183,6 @@ module.exports = {
   actualizarUnProductoDelCarrito,
   agregarImagenProducto,
   pagarProductos,
+  habilitarProducto,
+  deshabilitarProducto,
 };

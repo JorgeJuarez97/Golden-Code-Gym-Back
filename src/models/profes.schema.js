@@ -21,6 +21,15 @@ const ProfesSchema = new Schema({
     required: true,
     trim: true,
   },
+  imagen: {
+    type: String,
+    default: "",
+    trim: true,
+  },
+  bloqueado: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const ProfesModel = model("profe", ProfesSchema);

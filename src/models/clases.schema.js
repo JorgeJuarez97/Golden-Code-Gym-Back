@@ -24,6 +24,10 @@ const ClasesSchema = new Schema({
     required: true,
   },
   usuariosReservados: [],
+  bloqueado: {
+    type: Boolean,
+    default: false,
+  },
   imagen: {
     type: String,
     default: "",

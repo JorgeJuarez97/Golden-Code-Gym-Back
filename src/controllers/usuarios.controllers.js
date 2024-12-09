@@ -5,7 +5,7 @@ const obtenerTodosLosUsuarios = async (req, res) => {
   const result = await serviciosUsuarios.obtenerUsuarios();
 
   if (result.statusCode === 200) {
-    res.status(200).json(result.usuarios);
+    res.status(200).json({ usuarios: result.usuarios });
   } else {
     res.status(500).json({ msg: "Error al traer los usuarios" });
   }
@@ -15,7 +15,7 @@ const obtenerUnUsuario = async (req, res) => {
   const result = await serviciosUsuarios.obtenerUsuario(req.params.idUsuario);
 
   if (result.statusCode === 200) {
-    res.status(200).json(result.usuario);
+    res.status(200).json({ usuario: result.usuario });
   } else {
     res.status(500).json({ msg: "Error al traer el usuario" });
   }
@@ -64,9 +64,11 @@ const inicioDeSesionUsuario = async (req, res) => {
   const result = await serviciosUsuarios.iniciarSesion(req.body);
 
   if (result.statusCode === 200) {
-    res.status(200).json({ msg: result.msg, token: result.token });
+    res
+      .status(200)
+      .json({ msg: result.msg, token: result.token, rol: result.rol });
   } else if (result.statusCode === 400) {
-    res.status(400).json({ msg: result.msg });
+    res.status(400).json({ msg: result.msg, bloqueado: true });
   } else {
     res.status(500).json({ msg: "Error al iniciar sesion" });
   }

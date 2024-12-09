@@ -52,7 +52,7 @@ const crearUsuario = async (body) => {
   await carrito.save();
   await usuario.save();
 
-  await darBienvenidaUsuario(usuario.emailUsuario, usuario.nombreUsuario);
+  // await darBienvenidaUsuario(usuario.emailUsuario, usuario.nombreUsuario);
 
   return {
     msg: "Usuario creado con exito",
@@ -90,8 +90,15 @@ const eliminarUsuario = async (idUsuario) => {
 
 const iniciarSesion = async (body) => {
   const usuarioExiste = await UsersModel.findOne({
-    nombreUsuario: body.nombreUsuario,
+    emailUsuario: body.emailUsuario,
   });
+
+  if (usuarioExiste.bloqueado) {
+    return {
+      msg: "Usuario bloqueado",
+      statusCode: 400,
+    };
+  }
 
   if (!usuarioExiste) {
     return {
@@ -116,6 +123,7 @@ const iniciarSesion = async (body) => {
     return {
       msg: "Usuario logueado",
       token,
+      rol: usuarioExiste.rol,
       statusCode: 200,
     };
   }
