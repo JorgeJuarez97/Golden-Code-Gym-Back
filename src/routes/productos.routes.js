@@ -9,7 +9,6 @@ const {
   eliminarUnProductoDelCarrito,
   obtenerProductosCarrito,
   obtenerTodosLosProductosPorTipo,
-  actualizarUnProductoDelCarrito,
   agregarImagenProducto,
   pagarProductos,
   deshabilitarProducto,
@@ -21,11 +20,7 @@ const multer = require("../middlewares/multer");
 
 router.get("/", obtenerTodosLosProductos);
 router.get("/tipo/:tipoDeProducto", obtenerTodosLosProductosPorTipo);
-router.get(
-  "/obtenerProductosCarrito/:idUsuario",
-  auth("user"),
-  obtenerProductosCarrito
-);
+router.get("/obtenerProductosCarrito", auth("user"), obtenerProductosCarrito);
 router.get("/:idProducto", obtenerUnProducto);
 
 router.post("/", auth("admin"), crearUnProducto);
@@ -42,11 +37,6 @@ router.post(
 router.post("/pagarCarritoProductos", auth("user"), pagarProductos);
 
 router.put("/:idProducto", auth("admin"), actualizarUnProducto);
-router.put(
-  "/actualizarProductoCarrito/:idProducto",
-  auth("user"),
-  actualizarUnProductoDelCarrito
-);
 router.put("/deshabilitar/:idProducto", auth("admin"), deshabilitarProducto);
 router.put("/habilitar/:idProducto", auth("admin"), habilitarProducto);
 

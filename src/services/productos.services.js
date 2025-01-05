@@ -31,11 +31,11 @@ const obtenerProducto = async (idProducto) => {
 const nuevoProducto = async (body) => {
   const nuevoProducto = new ProductModel(body);
   await nuevoProducto.save();
-  console.log(nuevoProducto);
 
   return {
     msg: "Producto creado con exito",
     statusCode: 201,
+    nuevoProducto,
   };
 };
 
@@ -60,19 +60,25 @@ const eliminarProducto = async (idProducto) => {
   };
 };
 
-const cargarProductoCarrito = async (idUsuario, idProducto) => {
+const cargarProductoCarrito = async (idUsuario, idProducto, body) => {
   const usuario = await UsersModel.findById(idUsuario);
   const producto = await ProductModel.findById(idProducto);
   const carrito = await CartModel.findOne({ _id: usuario.idCarrito });
-  const cantidad = 1;
+  const cantidad = body.cantidad;
 
   const productoExiste = carrito.productos.find(
     (prod) => prod?._id.toString() === idProducto.toString()
   );
 
   if (productoExiste) {
+    productoExiste.cantidad += cantidad;
+
+    carrito.markModified("productos");
+
+    await carrito.save();
+
     return {
-      msg: "Producto ya existe en carrito",
+      msg: "Producto actualizado en el carrito",
       statusCode: 200,
     };
   }
@@ -81,7 +87,7 @@ const cargarProductoCarrito = async (idUsuario, idProducto) => {
     _id: producto._id,
     tipoDeProducto: producto.tipoDeProducto,
     nombreProducto: producto.nombreProducto,
-    precio: producto.precio * cantidad,
+    precio: producto.precio,
     descripcion: producto.descripcion,
     imagen: producto.imagen,
     cantidad: cantidad,
@@ -91,28 +97,6 @@ const cargarProductoCarrito = async (idUsuario, idProducto) => {
 
   return {
     msg: "Producto agregado con exito",
-    statusCode: 200,
-  };
-};
-
-const actualizarProductoCarrito = async (idUsuario, idProducto) => {
-  const usuario = await UsersModel.findById(idUsuario);
-  const producto = await ProductModel.findById(idProducto);
-  const carrito = await CartModel.findOne({ _id: usuario.idCarrito });
-
-  const productoExiste = carrito.productos.find(
-    (prod) => prod?._id.toString() === idProducto.toString()
-  );
-
-  if (productoExiste) {
-    productoExiste.cantidad += 1;
-  }
-
-  carrito.markModified("productos");
-
-  await carrito.save();
-  return {
-    msg: "Se actualizo la cantidad del producto",
     statusCode: 200,
   };
 };
@@ -192,18 +176,16 @@ const pagarMercadoPago = async (idUsuario) => {
     body: {
       items: items,
       back_urls: {
-        success: "frontend/carrito/secces",
-        failure: "frontend/carrito/failure",
-        pending: "frontend/carrito/pending",
+        success: "http://localhost:5173/pagoexitoso",
+        failure: "http://localhost:5173/carrito",
+        pending: "http://localhost:5173/carrito",
       },
       auto_return: "approved",
     },
   });
 
-  console.log(result);
-
   return {
-    url: result.init_point,
+    url: result.id,
     statusCode: 200,
   };
 };
@@ -238,7 +220,6 @@ module.exports = {
   cargarProductoCarrito,
   eliminarProductoCarrito,
   obtenerTodosLosProductosCarritoUsuario,
-  actualizarProductoCarrito,
   agregarImagen,
   pagarMercadoPago,
   bloquearProductoPorId,

@@ -1,5 +1,6 @@
 const UsersModel = require("../models/usuarios.schema");
 const ClasesModel = require("../models/clases.schema");
+const cloudinary = require("../helpers/cloudinary.config");
 
 const obtenerClases = async () => {
   const clases = await ClasesModel.find();
@@ -20,11 +21,11 @@ const obtenerClase = async (idClase) => {
 const nuevaClase = async (body) => {
   const nuevaClase = new ClasesModel(body);
   await nuevaClase.save();
-  console.log(nuevaClase);
 
   return {
     msg: "Clase creada con exito",
     statusCode: 201,
+    nuevaClase,
   };
 };
 
@@ -61,7 +62,6 @@ const reservarClase = async (idUsuario, idClase) => {
   }
 
   if (!clase) {
-    console.log("Clase no encontrada");
     return {
       msg: "Clase no encontrada",
       statusCode: 404,
@@ -87,6 +87,7 @@ const reservarClase = async (idUsuario, idClase) => {
     return {
       msg: "Cupo reservado",
       statusCode: 200,
+      reservaActiva: true,
     };
   }
 
@@ -108,7 +109,6 @@ const eliminarReservarClase = async (idUsuario, idClase) => {
   }
 
   if (!clase) {
-    console.log("Clase no encontrada");
     return {
       msg: "Clase no encontrada",
       statusCode: 404,
@@ -169,6 +169,36 @@ const agregarImagen = async (idClase, file) => {
   };
 };
 
+const verificarReserva = async (idUsuario, idClase) => {
+  const usuario = await UsersModel.findById(idUsuario);
+  const clase = await ClasesModel.findById(idClase);
+
+  if (!clase) {
+    return {
+      msg: "Clase no encontrada",
+      statusCode: 404,
+    };
+  }
+
+  const usuarioReservado = clase.usuariosReservados.find(
+    (reservado) => reservado?._id.toString() === idUsuario.toString()
+  );
+
+  if (usuarioReservado) {
+    return {
+      msg: "Ya tienes una reserva activa para esta clase",
+      statusCode: 200,
+      reservaActiva: true,
+    };
+  }
+
+  return {
+    msg: "No tienes una reserva activa para esta clase",
+    statusCode: 200,
+    reservaActiva: false,
+  };
+};
+
 module.exports = {
   obtenerClases,
   obtenerClase,
@@ -180,4 +210,5 @@ module.exports = {
   bloquearClasePorId,
   desbloquearClasePorId,
   agregarImagen,
+  verificarReserva,
 };

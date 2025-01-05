@@ -53,10 +53,30 @@ const eliminarUnPlan = async (req, res) => {
   }
 };
 
+const habilitarPlan = async (req, res) => {
+  const result = await serviciosPlanes.desbloquearPlanPorId(req.params.idPlan);
+  if (result.statusCode === 200) {
+    res.status(200).json({ msg: result.msg });
+  } else {
+    res.status(500).json({ msg: "Error al habilitar el plan" });
+  }
+};
+
+const deshabilitarPlan = async (req, res) => {
+  const result = await serviciosPlanes.bloquearPlanPorId(req.params.idPlan);
+  if (result.statusCode === 200) {
+    res.status(200).json({ msg: result.msg });
+  } else {
+    res.status(500).json({ msg: "Error al deshabilitar el plan" });
+  }
+};
+
 module.exports = {
   obtenerTodosLosPlanes,
   obtenerUnPlan,
   crearUnPlan,
   actualizarUnPlan,
   eliminarUnPlan,
+  habilitarPlan,
+  deshabilitarPlan,
 };
