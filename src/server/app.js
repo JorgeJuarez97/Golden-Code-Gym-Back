@@ -21,6 +21,9 @@ class Server {
   }
 
   rutas() {
+    this.app.get("/", (req, res) => {
+      res.send("API Golden Code Gym está funcionando correctamente.");
+    });
     this.app.use("/productosgym", require("../routes/productos.routes"));
     this.app.use("/usuariosgym", require("../routes/usuarios.routes"));
     this.app.use("/clasesgym", require("../routes/clases.routes"));
