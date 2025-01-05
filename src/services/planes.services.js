@@ -21,7 +21,6 @@ const obtenerPlan = async (idPlan) => {
 const crearPlan = async (body) => {
   const nuevoPlan = new PlanesModel(body);
   await nuevoPlan.save();
-  console.log(nuevoPlan);
 
   return {
     msg: "Plan creado con exito",
@@ -47,10 +46,32 @@ const eliminarPlan = async (idPlan) => {
   };
 };
 
+const bloquearPlanPorId = async (idPlan) => {
+  const plan = await PlanesModel.findById(idPlan);
+  plan.bloqueado = true;
+  await plan.save();
+  return {
+    msg: "Plan bloqueado",
+    statusCode: 200,
+  };
+};
+
+const desbloquearPlanPorId = async (idPlan) => {
+  const plan = await PlanesModel.findById(idPlan);
+  plan.bloqueado = false;
+  await plan.save();
+  return {
+    msg: "Plan habilitado",
+    statusCode: 200,
+  };
+};
+
 module.exports = {
   obtenerPlanes,
   obtenerPlan,
   crearPlan,
   actualizarPlan,
   eliminarPlan,
+  bloquearPlanPorId,
+  desbloquearPlanPorId,
 };

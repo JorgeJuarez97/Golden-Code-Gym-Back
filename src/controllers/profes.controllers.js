@@ -24,7 +24,7 @@ const crearUnProfe = async (req, res) => {
   const result = await serviciosProfes.crearProfe(req.body);
 
   if (result.statusCode === 201) {
-    res.status(201).json({ msg: result.msg });
+    res.status(201).json({ msg: result.msg, nuevoProfe: result.nuevoProfe });
   } else {
     res.status(500).json({ msg: "Error al crear el profesor" });
   }

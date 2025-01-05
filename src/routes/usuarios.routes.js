@@ -26,9 +26,9 @@ router.post(
     check("dni", "Campo DNI esta vacio").not().isEmpty(),
     check("emailUsuario", "Campo EMAILUSUARIO esta vacio").not().isEmpty(),
     check("contrasenia", "Campo CONTRASENIA esta vacio").not().isEmpty(),
-    check("contrasenia", "Min: 8 caracteres y Max: 30 caracteres").isLength({
+    check("contrasenia", "Min: 8 caracteres y Max: 16 caracteres").isLength({
       min: 8,
-      max: 30,
+      max: 16,
     }),
   ],
   crearUnUsuario

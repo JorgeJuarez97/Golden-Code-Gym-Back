@@ -1,4 +1,5 @@
 const ProfesModel = require("../models/profes.schema");
+const cloudinary = require("../helpers/cloudinary.config");
 
 const obtenerProfes = async () => {
   const profes = await ProfesModel.find();
@@ -21,11 +22,11 @@ const obtenerProfe = async (idProfe) => {
 const crearProfe = async (body) => {
   const nuevoProfe = new ProfesModel(body);
   await nuevoProfe.save();
-  console.log(nuevoProfe);
 
   return {
     msg: "Profesor creado con exito",
     statusCode: 201,
+    nuevoProfe,
   };
 };
 

@@ -16,6 +16,15 @@ const PlanesSchema = new Schema({
     required: true,
     trim: true,
   },
+  descripcion: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  bloqueado: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const PlanesModel = model("plan", PlanesSchema);

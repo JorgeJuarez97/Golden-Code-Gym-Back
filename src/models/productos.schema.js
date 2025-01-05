@@ -29,6 +29,11 @@ const ProductSchema = new Schema({
     default: "",
     trim: true,
   },
+  cantidad: {
+    type: Number,
+    required: true,
+    default: 1,
+  },
 });
 
 const ProductModel = model("product", ProductSchema);

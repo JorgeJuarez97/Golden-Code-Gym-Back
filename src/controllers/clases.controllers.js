@@ -24,7 +24,7 @@ const crearUnaClase = async (req, res) => {
   const result = await serviciosClases.nuevaClase(req.body);
 
   if (result.statusCode === 201) {
-    res.status(201).json({ msg: result.msg });
+    res.status(201).json({ msg: result.msg, nuevaClase: result.nuevaClase });
   } else {
     res.status(500).json({ msg: "Error al crear la clase" });
   }
@@ -60,7 +60,9 @@ const reservarUnaClase = async (req, res) => {
   );
 
   if (result.statusCode === 200) {
-    res.status(200).json({ msg: result.msg });
+    res
+      .status(200)
+      .json({ msg: result.msg, reservaActiva: result.reservaActiva });
   } else if (result.statusCode === 404) {
     res.status(404).json({ msg: result.msg });
   } else {
@@ -116,6 +118,23 @@ const agregarImagenClase = async (req, res) => {
   }
 };
 
+const verificarUnaReserva = async (req, res) => {
+  const result = await serviciosClases.verificarReserva(
+    req.idUsuario,
+    req.params.idClase
+  );
+
+  if (result.statusCode === 200) {
+    res
+      .status(200)
+      .json({ msg: result.msg, reservaActiva: result.reservaActiva });
+  } else if (result.statusCode === 404) {
+    res.status(404).json({ msg: result.msg });
+  } else {
+    res.status(500).json({ msg: "Error al verificar reserva" });
+  }
+};
+
 module.exports = {
   obtenerTodasLasClases,
   obtenerUnaClase,
@@ -127,4 +146,5 @@ module.exports = {
   habilitarClase,
   deshabilitarClase,
   agregarImagenClase,
+  verificarUnaReserva,
 };

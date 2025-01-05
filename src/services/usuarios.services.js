@@ -24,7 +24,7 @@ const obtenerUsuario = async (idUsuario) => {
 
 const crearUsuario = async (body) => {
   const usuarioExiste = await UsersModel.findOne({
-    nombreUsuario: body.nombreUsuario,
+    emailUsuario: body.emailUsuario,
   });
 
   if (usuarioExiste) {
@@ -34,7 +34,7 @@ const crearUsuario = async (body) => {
     };
   }
 
-  if (body?.role && (body?.role !== "admin" || body?.role !== "user")) {
+  if (body?.rol && body?.rol !== "admin" && body?.rol !== "user") {
     return {
       msg: "Rol incorrecto. Solo se puede elegir entre USER/ADMIN",
       statudCode: 400,
@@ -52,7 +52,7 @@ const crearUsuario = async (body) => {
   await carrito.save();
   await usuario.save();
 
-  // await darBienvenidaUsuario(usuario.emailUsuario, usuario.nombreUsuario);
+  await darBienvenidaUsuario(usuario.emailUsuario, usuario.nombreUsuario);
 
   return {
     msg: "Usuario creado con exito",

@@ -10,6 +10,7 @@ const {
   deshabilitarClase,
   habilitarClase,
   agregarImagenClase,
+  verificarUnaReserva,
 } = require("../controllers/clases.controllers");
 const router = express.Router();
 const auth = require("../middlewares/auth");
@@ -18,6 +19,7 @@ const multer = require("../middlewares/multer");
 router.get("/", obtenerTodasLasClases);
 
 router.get("/:idClase", obtenerUnaClase);
+router.get("/verificarReserva/:idClase", auth("user"), verificarUnaReserva);
 
 router.post("/", auth("admin"), crearUnaClase);
 

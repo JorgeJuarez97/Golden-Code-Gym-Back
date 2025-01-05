@@ -38,7 +38,9 @@ const crearUnProducto = async (req, res) => {
   const result = await serviciosProductos.nuevoProducto(req.body);
 
   if (result.statusCode === 201) {
-    res.status(201).json({ msg: result.msg });
+    res
+      .status(201)
+      .json({ msg: result.msg, nuevoProducto: result.nuevoProducto });
   } else {
     res.status(500).json({ msg: "Error al crear el producto" });
   }
@@ -72,7 +74,8 @@ const eliminarUnProducto = async (req, res) => {
 const agregarUnProductoAlCarrito = async (req, res) => {
   const result = await serviciosProductos.cargarProductoCarrito(
     req.idUsuario,
-    req.params.idProducto
+    req.params.idProducto,
+    req.body
   );
 
   if (result.statusCode === 200) {
@@ -94,19 +97,6 @@ const eliminarUnProductoDelCarrito = async (req, res) => {
     res.status(404).json({ msg: result.msg });
   } else {
     res.status(500).json({ msg: "Error al eliminar el producto del carrito" });
-  }
-};
-
-const actualizarUnProductoDelCarrito = async (req, res) => {
-  const result = await serviciosProductos.actualizarProductoCarrito(
-    req.idUsuario,
-    req.params.idProducto
-  );
-
-  if (result.statusCode === 200) {
-    res.status(200).json({ msg: result.msg });
-  } else {
-    res.status(500).json({ msg: "Error al actualizar el producto" });
   }
 };
 
@@ -180,7 +170,6 @@ module.exports = {
   agregarUnProductoAlCarrito,
   eliminarUnProductoDelCarrito,
   obtenerProductosCarrito,
-  actualizarUnProductoDelCarrito,
   agregarImagenProducto,
   pagarProductos,
   habilitarProducto,
