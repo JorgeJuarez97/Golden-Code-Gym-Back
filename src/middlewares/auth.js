@@ -7,7 +7,7 @@ module.exports = (rolRuta) => (req, res, next) => {
     return res.status(401).json({ msg: "Token no proporcionado" });
   }
 
-  const token = authHeader.split(" ")[1].replace(/"/g, "");
+  const token = authHeader.split(" ")[1];
   if (!token) {
     return res.status(401).json({ msg: "Formato de token inválido" });
   }
