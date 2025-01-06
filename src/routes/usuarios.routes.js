@@ -19,7 +19,6 @@ router.get("/:idUsuario", auth("admin"), obtenerUnUsuario);
 
 router.post(
   "/",
-  auth("admin"),
   [
     check("nombre", "Campo NOMBRE esta vacio").not().isEmpty(),
     check("apellido", "Campo APELLIDO esta vacio").not().isEmpty(),
