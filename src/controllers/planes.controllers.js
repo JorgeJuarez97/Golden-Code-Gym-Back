@@ -71,6 +71,22 @@ const deshabilitarPlan = async (req, res) => {
   }
 };
 
+const agregarUnInfoPlanUser = async (req, res) => {
+  const result = await serviciosPlanes.agregarPlanInfoUser(
+    req.params.idPlan,
+    req.body
+  );
+  if (result.statusCode === 200) {
+    res.status(200).json({ msg: result.msg });
+  } else if (result.statusCode === 400) {
+    res.status(400).json({ msg: result.msg });
+  } else if (result.statusCode === 404) {
+    res.status(404).json({ msg: result.msg });
+  } else {
+    res.status(500).json({ msg: "Error al agregar la informacion" });
+  }
+};
+
 module.exports = {
   obtenerTodosLosPlanes,
   obtenerUnPlan,
@@ -79,4 +95,5 @@ module.exports = {
   eliminarUnPlan,
   habilitarPlan,
   deshabilitarPlan,
+  agregarUnInfoPlanUser,
 };

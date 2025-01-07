@@ -11,6 +11,7 @@ const {
   habilitarClase,
   agregarImagenClase,
   verificarUnaReserva,
+  eliminarReservarUnaCLaseAdmin,
 } = require("../controllers/clases.controllers");
 const router = express.Router();
 const auth = require("../middlewares/auth");
@@ -40,6 +41,11 @@ router.delete(
   "/eliminarReservarCupo/:idClase",
   auth("user"),
   eliminarReservarUnaCLase
+);
+router.delete(
+  "/eliminarReservarCupoAdmin/:idClase",
+  auth("admin"),
+  eliminarReservarUnaCLaseAdmin
 );
 
 module.exports = router;

@@ -85,6 +85,21 @@ const eliminarReservarUnaCLase = async (req, res) => {
   }
 };
 
+const eliminarReservarUnaCLaseAdmin = async (req, res) => {
+  const result = await serviciosClases.eliminarReservarClase(
+    req.body.idUsuario,
+    req.params.idClase
+  );
+
+  if (result.statusCode === 200) {
+    res.status(200).json({ msg: result.msg });
+  } else if (result.statusCode === 404) {
+    res.status(404).json({ msg: result.msg });
+  } else {
+    res.status(500).json({ msg: "Error al eliminar reserva" });
+  }
+};
+
 const habilitarClase = async (req, res) => {
   const result = await serviciosClases.desbloquearClasePorId(
     req.params.idClase
@@ -147,4 +162,5 @@ module.exports = {
   deshabilitarClase,
   agregarImagenClase,
   verificarUnaReserva,
+  eliminarReservarUnaCLaseAdmin,
 };

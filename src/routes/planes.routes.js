@@ -9,12 +9,14 @@ const {
   eliminarUnPlan,
   deshabilitarPlan,
   habilitarPlan,
+  agregarUnInfoPlanUser,
 } = require("../controllers/planes.controllers");
 
 router.get("/", obtenerTodosLosPlanes);
 router.get("/:idPlan", obtenerUnPlan);
 
 router.post("/", auth("admin"), crearUnPlan);
+router.post("/agregarInfoPlanUser/:idPlan", agregarUnInfoPlanUser);
 
 router.put("/:idPlan", auth("admin"), actualizarUnPlan);
 router.put("/deshabilitar/:idPlan", auth("admin"), deshabilitarPlan);

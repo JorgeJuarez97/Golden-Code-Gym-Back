@@ -66,6 +66,42 @@ const desbloquearPlanPorId = async (idPlan) => {
   };
 };
 
+const agregarPlanInfoUser = async (idPlan, body) => {
+  const plan = await PlanesModel.findById(idPlan);
+  const { nombre, apellido, emailUsuario } = body;
+
+  if (!plan) {
+    return {
+      msg: "Plan no encontrado",
+      statusCode: 404,
+    };
+  }
+
+  const infoUserExiste = plan.infoPlanUser.find(
+    (info) => info.emailUsuario === emailUsuario
+  );
+
+  if (infoUserExiste) {
+    return {
+      msg: "Ya enviaste una solicitud",
+      statusCode: 400,
+    };
+  }
+
+  plan.infoPlanUser.push({
+    nombre,
+    apellido,
+    emailUsuario,
+  });
+
+  await plan.save();
+
+  return {
+    msg: "Informacion agregada con exito",
+    statusCode: 200,
+  };
+};
+
 module.exports = {
   obtenerPlanes,
   obtenerPlan,
@@ -74,4 +110,5 @@ module.exports = {
   eliminarPlan,
   bloquearPlanPorId,
   desbloquearPlanPorId,
+  agregarPlanInfoUser,
 };

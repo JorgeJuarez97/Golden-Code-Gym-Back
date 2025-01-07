@@ -25,6 +25,7 @@ const PlanesSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  infoPlanUser: [],
 });
 
 const PlanesModel = model("plan", PlanesSchema);
