@@ -87,6 +87,21 @@ const agregarUnInfoPlanUser = async (req, res) => {
   }
 };
 
+const eliminarUnInfoPlanUser = async (req, res) => {
+  const result = await serviciosPlanes.eliminarPlanInfoUser(
+    req.params.idPlan,
+    req.body.emailUsuario
+  );
+
+  if (result.statusCode === 200) {
+    res.status(200).json({ msg: result.msg });
+  } else if (result.statusCode === 404) {
+    res.status(404).json({ msg: result.msg });
+  } else {
+    res.status(500).json({ msg: "Error al eliminar los datos del plan" });
+  }
+};
+
 module.exports = {
   obtenerTodosLosPlanes,
   obtenerUnPlan,
@@ -96,4 +111,5 @@ module.exports = {
   habilitarPlan,
   deshabilitarPlan,
   agregarUnInfoPlanUser,
+  eliminarUnInfoPlanUser,
 };

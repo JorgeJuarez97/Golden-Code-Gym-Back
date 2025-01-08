@@ -102,6 +102,29 @@ const agregarPlanInfoUser = async (idPlan, body) => {
   };
 };
 
+const eliminarPlanInfoUser = async (idPlan, emailUsuario) => {
+  const plan = await PlanesModel.findById(idPlan);
+
+  const posicionInfoUser = plan.infoPlanUser.findIndex(
+    (p) => p?.emailUsuario === emailUsuario
+  );
+
+  if (posicionInfoUser === -1) {
+    return {
+      msg: "Usuario no encontrado en la lista de planes",
+      statusCode: 404,
+    };
+  }
+
+  plan.infoPlanUser.splice(posicionInfoUser, 1);
+  await plan.save();
+
+  return {
+    msg: "Datos eliminados del plan",
+    statusCode: 200,
+  };
+};
+
 module.exports = {
   obtenerPlanes,
   obtenerPlan,
@@ -111,4 +134,5 @@ module.exports = {
   bloquearPlanPorId,
   desbloquearPlanPorId,
   agregarPlanInfoUser,
+  eliminarPlanInfoUser,
 };

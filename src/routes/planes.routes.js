@@ -10,6 +10,7 @@ const {
   deshabilitarPlan,
   habilitarPlan,
   agregarUnInfoPlanUser,
+  eliminarUnInfoPlanUser,
 } = require("../controllers/planes.controllers");
 
 router.get("/", obtenerTodosLosPlanes);
@@ -23,5 +24,10 @@ router.put("/deshabilitar/:idPlan", auth("admin"), deshabilitarPlan);
 router.put("/habilitar/:idPlan", auth("admin"), habilitarPlan);
 
 router.delete("/:idPlan", auth("admin"), eliminarUnPlan);
+router.delete(
+  "/eliminarInfoPlanUser/:idPlan",
+  auth("admin"),
+  eliminarUnInfoPlanUser
+);
 
 module.exports = router;
